@@ -11,7 +11,7 @@ Hodnocení: 15 / 15 (bez bonusu)
 viz. [ZADANI.md](ZADANI.md)
 
 ## Může se hodit
-* [AWK cheatsheet](https://cdn.discordapp.com/attachments/534431057001316362/950420676450353202/unknown.png) ([src. Discord zpráva](https://discord.com/channels/461541385204400138/534431057001316362/950420677486338158))
+* [AWK cheatsheet](https://cdn.discordapp.com/attachments/534431057001316362/950420676450353202/unknown.png) (Sigu)
 * [Test–skript](https://gist.github.com/lavirlifiliol/18b8afca7a7a574442795b50fe41e6bc) (lakmatiol)
 * [Test–skript](https://www.sendspace.com/file/k39svc) (JTW)
 
