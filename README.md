@@ -1,19 +1,19 @@
-# IOS PROJ. 1, FIT VUT 2022
+# IOS PROJEKT 1, FIT VUT 2022
 
 *První projekt (shellový skript) z předmětu Operační systémy (IOS), druhý semestr bakalářského studia (BIT) na FIT VUT, ak.rok 2021/2022*
 
-⚠️ **Zveřejněno pro archivní účely — neplagiarizujte, ta nula by Vás mrzela. Za nic takového nenesu odpovědnost** (i tak je zadání každý rok jiné).
+⚠️ **Zveřejněno pro archivní a studijní účely — nekopírujte, ta nula by Vás mrzela. Za nic takového nenesu žádnou odpovědnost!** Všechny odevzdané projekty procházejí kontrolou plagiátorství, při níž jsou porovnávány i s dříve odevzdanými řešeními.
 
-Hodnocení: 15 / 15 (bez bonusu)
+<br>
 
-## Zadání
+Hodnocení: 15 / 15<br>(bez bonusu)
 
-viz. [ZADANI.md](ZADANI.md)
+Zadání: [ZADANI.md](ZADANI.md); alt. [MOODLE PAGE](https://www.fit.vutbr.cz/study/courses/IOS/private/Lab/projekty/projekt1/ios22-projekt-1.html)
 
 ## Může se hodit
-* [AWK cheatsheet](https://cdn.discordapp.com/attachments/534431057001316362/950420676450353202/unknown.png) (Sigu)
-* [Test–skript](https://gist.github.com/lavirlifiliol/18b8afca7a7a574442795b50fe41e6bc) (lakmatiol)
-* [Test–skript](https://www.sendspace.com/file/k39svc) (JTW)
+* [AWK Cheatsheet](https://cdn.discordapp.com/attachments/534431057001316362/950420676450353202/unknown.png) (Sigu)
+* [Test–Skript](https://gist.github.com/lavirlifiliol/18b8afca7a7a574442795b50fe41e6bc) (lakmatiol)
+* [Test–Skript](https://www.sendspace.com/file/k39svc) (JTW)
 
 ### Vzorové záznamy
 * `osoby-short.csv` + komprimované varianty: [ve složce "zaznamy"](zaznamy/)
