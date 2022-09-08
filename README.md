@@ -10,7 +10,12 @@ Hodnocení: 15 / 15 (bez bonusu)
 
 viz. [ZADANI.md](ZADANI.md)
 
-## Vzorové záznamy
+## Může se hodit
+* [AWK cheatsheet](https://cdn.discordapp.com/attachments/534431057001316362/950420676450353202/unknown.png) ([src. Discord zpráva](https://discord.com/channels/461541385204400138/534431057001316362/950420677486338158))
+* [Test–skript](https://gist.github.com/lavirlifiliol/18b8afca7a7a574442795b50fe41e6bc) (lakmatiol)
+* [Test–skript](https://www.sendspace.com/file/k39svc) (JTW)
+
+### Vzorové záznamy
 * `osoby-short.csv` + komprimované varianty: [ve složce "zaznamy"](zaznamy/)
 * `osoby.csv` (verze z [příkladů použití](ZADANI.md#examples)): [stáhnout z "pajda.fit.vutbr.cz"](https://pajda.fit.vutbr.cz/ios/ios-22-1-inputs/-/raw/main/data/osoby.csv)
 * `osoby.csv` (aktuální): [stáhnout z "mzcr.cz"](https://onemocneni-aktualne.mzcr.cz/api/v2/covid-19/osoby.csv)
