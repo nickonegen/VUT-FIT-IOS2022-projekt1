@@ -1,17 +1,18 @@
 #!/bin/sh
 #
 ## @file corona
-## @brief 1. IOS Project
-## @details Script for the analysis of records of persons with proven COVID-19 coronavirus infection
+## @brief 1. projekt IOS
+## @details Skript pre analýzu záznamov osôb s dokázanou infekciou koronavírusom spôsobujúcim ochorenie COVID-19
+## @author GitHub User <xplagi0b@vutbr.cz>
 ## @date 2022-03-30
-##
+## 
 
 export POSIXLY_CORRECT=yes
 export LANG=en_GB.UTF-8
 export LC_NUMERIC=en_GB.UTF-8
 
-## @section Custom_functions
-## @fn print_help() Help
+## @section Vlastné_funkcie
+## @fn print_help() Výpis nápovedy
 ##
 print_help() {
     echo "Usage: corona [-h] [FILTERS] [COMMAND] [LOG [LOG2 [...]]"
@@ -37,12 +38,12 @@ print_help() {
     echo " All dates are expected to be in YYYY-MM-DD format."
 }
 
-## @section Parameter_variables
-## @var $command Command to execute
-## @var $date_start Starting date filter (-a)
-## @var $date_end Ending date filter (-b)
-## @var $gender Gender filter (-g)
-## @var $histogram_width Max. histogram width, default: 0
+## @section Premenné_pre_vstupné_parametre
+## @var $command Príkaz na prevedenie
+## @var $date_start Počiatočný dátum filtra -a
+## @var $date_end Koncový dátum filtra -b
+## @var $gender Pohlavie z filtra -g
+## @var $histogram_width Maximálna šírka histogramu; nastaví sa na 0 ak -s bez parametra
 ##
 command=""
 date_start=""
@@ -50,26 +51,27 @@ date_end=""
 gender=""
 histogram_width=""
 
-## @subsection File_variables
-## @var $header CSV header
-## @var $log All records to process
+## @subsection Premenné_pre_logy_a_hlavičku
+## @var $header Hlavička z CSV súboru
+## @var $log Premenná na všetky záznamy zo súborov na spracovanie
 ##
 header="id,datum,vek,pohlavi,kraj_nuts_kod,okres_lau_kod,nakaza_v_zahranici,nakaza_zeme_csu_kod,reportovano_khs"
 log=""
 
-## @section Input_processing
+## @section Spracovanie_vstupných_parametrov
+## @description Postupné spracovávanie a ukladanie príkazu, filtrov a súborov do určených premenných
 ##
 while [ "$#" -gt 0 ]; do
     case "$1" in
-    ## @subsection Help(-h)
-    ## @brief Prints help text and ends the program
+    ## @subsection Nápoveda (-h)
+    ## @brief Vypíše pomocný text a ukončí program
     ##
     -h)
         print_help
         exit 0
     ;;
-    ## @subsection Command
-    ## @brief Stores the command name to execute (only one allowed)
+    ## @subsection Príkaz
+    ## @brief Uloží názov príkazu - maximálne jeden
     ##
     infected | merge | gender | age | countries | districts | regions | daily | monthly | yearly)
         if [ -z "$command" ]; then 
@@ -80,9 +82,9 @@ while [ "$#" -gt 0 ]; do
         fi
         shift
         ;;
-    ## @subsection Filters
-    ## @subsubsection After(-a)
-    ## @brief Filters entries by starting date
+    ## @subsection Filter
+    ## @subsubsection Po_dátume_(-a)
+    ## @brief Filtruje záznamy podľa počiatočného dátumu
     ##
     -a)
         if [ -z "$date_start" ]; then
@@ -99,8 +101,8 @@ while [ "$#" -gt 0 ]; do
         shift
         shift
         ;;
-    ## @subsubsection Before(-b)
-    ## @brief Filters entries by ending date
+    ## @subsubsection Pred_dátumom_(-b)
+    ## @brief Filtruje záznamy podľa koncového dátumu
     ##
     -b)
         if [ -z "$date_end" ]; then
@@ -117,8 +119,8 @@ while [ "$#" -gt 0 ]; do
         shift
         shift
         ;;
-    ## @subsubsection Gender(-g)
-    ## @brief Filters gender (M / Z)
+    ## @subsubsection Pohlavie_(-g)
+    ## @brief Filtruje pohlavie (M alebo Z)
     ##
     -g)
         if [ -z "$gender" ]; then
@@ -137,8 +139,8 @@ while [ "$#" -gt 0 ]; do
         shift
         shift
         ;;
-    ## @subsubsection Graph(-s)
-    ## @brief Enables histogram display and sets its width (if set)
+    ## @subsubsection Grafické_zobrazenie_(-s)
+    ## @brief Nastaví grafické zobrazenie dát (vo forme histogramu) + nastaví požadovanú šírku, ak zadaná
     ##
     -s)
         if [ -z "$histogram_width" ]; then
@@ -159,8 +161,8 @@ while [ "$#" -gt 0 ]; do
         fi
         shift
         ;;
-    ## @subsection Files
-    ## @subsubsection CSV(*.csv)
+    ## @subsection Súbory
+    ## @subsubsection CSV_súbory_(*.csv)
     ##
     *.csv)
         if [ -r "$1" ]; then
@@ -175,7 +177,7 @@ while [ "$#" -gt 0 ]; do
         fi
         shift
         ;;
-    ## @subsubsection Compressed_CSV(*.gz/*.gz2/*.bz2)
+    ## @subsubsection Komprimované_CSV_súbory_(*.gz/*.gz2/*.bz2)
     ##
     *.gz)
         if [ -r "$1" ]; then
@@ -216,7 +218,7 @@ while [ "$#" -gt 0 ]; do
         fi
         shift
         ;;
-    ## @subsubsection Other(Invalid)
+    ## @subsubsection Neplatný_argument
     ##
     *)
         1>&2 echo "Illegal parameter detected! For help, see: corona -h"
@@ -225,23 +227,26 @@ while [ "$#" -gt 0 ]; do
     esac
 done
 
-## @subsubsection STDIN
-## @brief If no file was specified, the script waits for input on STDIN
+## @subsubsection Štandardný_vstup
+## @brief Ak nebol uvedený žiaden súbor, skript očakáva vstup na STDIN pomocou CAT
 ##
 if [ -z "$log" ]; then
     log=$(cat - | sed 1d)
 fi
 
-## @section Check_entries
+## @section Kontrola_záznamov
 ##
 IFS=$(printf '\n\t')
-## @subsection Remove_empty_entries
+## @subsection Vymazanie_prázdnych_záznamov
 ##
 log=$(echo "$log" | sed '/^[[:space:]]*$/d' | sed -r 's/[[:space:]]+//g')
 
-## @subsection Check_date_and_age
+## @subsection Kontrola_správnosti_dátumu_a_veku
 ##
 log=$(echo "$log" | awk -F "," -v error_log="" '
+## @subsubsection Funkcie na výpis erroru
+## @description Neplatné záznamy sú vypísané na konci logu
+##
 function invalid_date(line) {
     error_log=error_log"\nInvalid date: "line
 }
@@ -249,9 +254,9 @@ function invalid_age(line) {
     error_log=error_log"\nInvalid age: "line
 }
 
-## @subsubsection Leap year check
-## @fn is_leap Checks if a year is a leap year
-## @return int 1 if leap year, else 0
+## @subsubsection Kontrola prechodného roku
+## @fn is_leap Skontroluje či je rok prechodný
+## @return int 1 Ak je rok prechodný, 0 ak nie
 ##
 function is_leap(year) {
     if (year % 4 == 0) 
@@ -265,8 +270,8 @@ function is_leap(year) {
 }
 
 {
-## @subsubsection Check_date
-## @description Checks date format and if date really exists
+## @subsubsection Kontrola_dátumu
+## @description Dátum musí mať správny formát a musí reprezentovať reálny deň
 ##
     if ($2 != "") {
         split($2, date, "-")
@@ -303,25 +308,30 @@ function is_leap(year) {
         }
     }
     
-    ## @subsubsection Check_age
-    ## @description Age must be an integer or undefined
+    ## @subsubsection Kontrola_veku
+    ## @description Vek musí byť prirodzené číslo (alebo nula alebo undefined)
     ##
     if ($3 != "" && (int($3) != $3 || $3 < 0)) {
         invalid_age($0)
         next
     }
 
+    ## @subsubsection Ponechanie_validných_záznamov
+    ##
     print
 } END {
+    ## @subsubsection Uloženie_invalidných_záznamov_na_koniec
+    ## @desc Tieto záznamy budú odfiltrované a zobrazené na konci skriptu
     print(error_log)
 }')
 
 error_log=$(echo "$log" | grep "^Invalid")
 log=$(echo "$log" | sed '/^Invalid/d')
 
-## @section Filter_application
-## @description Applying filters processed at the script start
-## @subsection After(-a)
+## @section Aplikovanie_filtrov
+## @description Aplikovanie filtrov, ktoré boli spracované na začiatku skriptov
+##        Jednotlivé filtre sú opísané v sekcií "Filter"
+## @subsection Po_dátume_(-a)
 ##
 if [ "$date_start" ]; then
     log=$(echo "$log" | awk -F "," -v date="$date_start" '{
@@ -330,7 +340,7 @@ if [ "$date_start" ]; then
             }
         }')
 fi
-## @subsection Before(-b)
+## @subsection Pred_dátumom_(-b)
 ##
 if [ "$date_end" ]; then
     log=$(echo "$log" | awk -F "," -v date="$date_end" '{
@@ -339,7 +349,7 @@ if [ "$date_end" ]; then
             }
         }')
 fi
-## @subsection Gender(-g)
+## @subsection Pohlavie_(-g)
 ##
 if [ "$gender" ]; then
     log=$(echo "$log" | awk -F "," -v gender="$gender" '{
@@ -349,26 +359,32 @@ if [ "$gender" ]; then
     }')
 fi
 
-## @section Command_execution
-## @var $out Command output
+## @section Prevedenie_príkazu
+## @var $out Výsledok príkazu na zobrazenie (mimo infected a merge/*)
 ##
 case "$command" in
     ## @subsection Infected
-    ## @brief Count of infected persons
+    ## @brief Spočíta počet nakazených.
     ## 
     infected)
         echo "$log" | wc -l
         ;;
     ## @subsection Gender
-    ## @brief Shows gender statistics of infected persons
+    ## @brief Vypíše štatistiku nakazených podľa pohlavia
     ## 
     gender)
         out=$(echo "$log" | awk -F "," \
         -v M=0 -v Z=0 -v none=0 \
         -v width="$histogram_width" 'BEGIN {
+            ## @subsubsection Pole
+            ## @description Definovanie poľa pre štatistiku
+            ## @var genderstats Pole štatistík na pohlavie
+            ##
             for (i = 0; i <= 2; i++)
                 genderstats[i] = 0
         } {
+            ## @subsubsection Spočítanie_počtu_nákaz_na_pohlavie
+            ##
             if ($4 == "M" || $4 == "m")
                 genderstats[0]++
             else if ($4 == "Z" || $4 == "z")
@@ -376,6 +392,10 @@ case "$command" in
             else
                 genderstats[2]++
         } END {
+            ## @subsubsection Histogramové_zobrazenie_štatistiky_na_pohlavie
+            ## @var weight Váha jedného dielika
+            ## @var max Maximálna hodnota v poli štatistík
+            ##
             if (width != "") {
                 weight = 0
                 if (width > 0) {
@@ -385,7 +405,7 @@ case "$command" in
                             max = genderstats[i]
                     weight = max/width
                 } else {
-                    weight = 100000    # Default value from assignment
+                    weight = 100000    # Predvolená váha zo zadania
                 }
 
                 for (i = 0; i <= 12; i++) {
@@ -396,6 +416,8 @@ case "$command" in
                 }
             }
 
+            ## @subsubsection Zobrazenie_štatistík
+            ##
             printf("M: %s\n", genderstats[0])
             printf("Z: %s", genderstats[1])
             if (genderstats[2] != "" && genderstats[2] != 0)
@@ -404,14 +426,20 @@ case "$command" in
         echo "$out"
         ;;
     ## @subsection Age
-    ## @brief Shows age statistics of infected persons
+    ## @brief Vypíše štatistiku nakazených podľa veku
     ## 
     age)
         out=$(echo "$log" | cut -f3 -d, | sort | awk -F "," \
             -v width="$histogram_width" 'BEGIN {
+                ## @subsubsection Pole
+                ## @description Definovanie poľa pre štatistiku
+                ## @var agestats Pole štastistík na vekové kategórie
+                ##
                 for (i = 0; i <= 12; i++)
                     agestats[i] = 0
             } {
+                ## @subsubsection Spočítanie_počtu_nákaz_na_vekovú_kategóriu
+                ##
                 if ($1 == "" || int($1) != $1)
                     agestats[0]++
                 else if ($1 <= 5)
@@ -439,8 +467,12 @@ case "$command" in
                 else if ($1 > 105)
                     agestats[12]++
                 else
-                    agestats[0]++    # Should not happen
+                    agestats[0]++    # Toto by sa nemalo stať
         } END {
+            ## @subsubsection Histogramové_zobrazenie_štatistiky_na_vekovú_kategóriu
+            ## @var weight Váha jedného dielika
+            ## @var max Maximálna hodnota v poli štatistík
+            ##
             if (width != "") {
                 weight = 0
                 if (width > 0) {
@@ -450,7 +482,7 @@ case "$command" in
                             max = agestats[i]
                     weight = max/width
                 } else {
-                    weight = 10000    # Default value from assignment
+                    weight = 10000    # Predvolená váha zo zadania
                 }
 
                 for (i = 0; i <= 12; i++) {
@@ -461,6 +493,8 @@ case "$command" in
                 }
             }
 
+            ## @subsubsection Zobrazenie_štatistík
+            ##
             printf("0-5   : %s\n", agestats[1])
             printf("6-15  : %s\n", agestats[2])
             printf("16-25 : %s\n", agestats[3])
@@ -479,11 +513,17 @@ case "$command" in
         echo "$out"
         ;;
     ## @subsection Countries
-    ## @brief Shows stats of countries of infection (outside Czechia)
+    ## @brief Vypíše štatistiku nakazených podľa krajiny nákazy (mimo ČR)
     ## 
     countries)
         out=$(echo "$log" | cut -f8 -d, | sort | sed '/CZ/d' | sed '/^[[:space:]]*$/d' | awk \
         -v width="$histogram_width" -v arrLength=-1 '{
+            ## @subsubsection Počet_nákaz_na_krajinu
+            ## @description Tvorba poľa pre štatistiku krajín nákazy
+            ## @var countryKeys Názvy krajín nákazy
+            ## @var countryValues Počet nakazených na krajinu (korešponduje s countryKeys zhodným indexom)
+            ## @var arrLength Dĺžka polí countryKeys a countryValues
+            ##
             if (lastLine != $1) {
                 arrLength++
                 countryKeys[arrLength] = $1
@@ -493,6 +533,10 @@ case "$command" in
                 countryValues[arrLength]++
             }
         } END {
+            ## @subsubsection Histogramové_zobrazenie_štatistiky_krajín
+            ## @var weight Váha jedného dielika
+            ## @var max Maximálna hodnota v poli štatistík
+            ##
             if (width != "") {
                 weight = 0
                 if (width > 0) {
@@ -502,7 +546,7 @@ case "$command" in
                             max = countryValues[i]
                     weight = max/width
                 } else {
-                    weight = 100    # Default value from assignment
+                    weight = 100    # Predvolená váha zo zadania
                 }
 
                 for (i = 0; i <= arrLength; i++) {
@@ -513,17 +557,25 @@ case "$command" in
                 }
             }
 
+            ## @subsubsection Zobrazenie_štatistík
+            ##
             for (i = 0; i <= arrLength; i++)
                 printf("%s: %s\n", countryKeys[i], countryValues[i])
         }' )
         echo "$out"
         ;;
     ## @subsection Districts
-    ## @brief Shows stats of districts of infected persons
+    ## @brief Vypíše štatistiku nakazených podľa okresu
     ## 
     districts)
         out=$(echo "$log" | cut -f6 -d, | sort | awk \
         -v width="$histogram_width" -v arrLength=0 '{
+            ## @subsubsection Počet_nákaz_na_okres
+            ## @description Tvorba poľa pre štatistiku okresu nakazených
+            ## @var districtKeys LAU kód okresu
+            ## @var districtValues Počet nakazených na okres (korešponduje s districtKeys zhodným indexom)
+            ## @var arrLength Dĺžka polí districtKeys a districtValues
+            ##
             if (lastLine != $1) {
                 arrLength++
                 districtKeys[arrLength] = $1
@@ -532,6 +584,10 @@ case "$command" in
             } else
                 districtValues[arrLength]++
         } END {
+            ## @subsubsection Histogramové_zobrazenie_štatistiky_okresov
+            ## @var weight Váha jedného dielika
+            ## @var max Maximálna hodnota v poli štatistík
+            ##
             if (width != "") {
                 weight = 0
                 if (width > 0) {
@@ -541,7 +597,8 @@ case "$command" in
                             max = districtValues[i]
                     weight = max/width
                 } else {
-                    weight = 1000    # Default value from assignment
+                    # Defaultná váha dielika zo zadania
+                    weight = 1000    # Predvolená váha zo zadania
                 }
 
                 for (i = 0; i <= arrLength; i++) {
@@ -552,6 +609,8 @@ case "$command" in
                 }
             }
 
+            ## @subsubsection Zobrazenie_štatistík
+            ##
             for (i = 1; i <= arrLength; i++)
                 printf("%s: %s\n", districtKeys[i], districtValues[i])
             if (districtValues[0] > 0)
@@ -560,11 +619,17 @@ case "$command" in
         echo "$out"
         ;;
     ## @subsection Regions
-    ## @brief Shows stats of regions of infected persons
+    ## @brief Vypíše štatistiku nakazených podľa kraja
     ## 
     regions)
         out=$(echo "$log" | cut -f5 -d, | sort | awk \
         -v width="$histogram_width" -v arrLength=0 '{
+            ## @subsubsection Počet_nákaz_na_kraj
+            ## @description Tvorba poľa pre štatistiku krajov nákazy
+            ## @var regionKeys NUTS kód kraja
+            ## @var regionValues Počet nakazených na kraj (korešponduje s regionKeys zhodným indexom)
+            ## @var arrLength Dĺžka polí regionKeys a regionValues
+            ##
             if (lastLine != $1) {
                 arrLength++
                 regionKeys[arrLength] = $1
@@ -573,6 +638,10 @@ case "$command" in
             } else
                 regionValues[arrLength]++
         } END {
+            ## @subsubsection Histogramové_zobrazenie_štatistiky_krajov
+            ## @var weight Váha jedného dielika
+            ## @var max Maximálna hodnota v poli štatistík
+            ##
             if (width != "") {
                 weight = 0
                 if (width > 0) {
@@ -582,7 +651,7 @@ case "$command" in
                             max = regionValues[i]
                     weight = max/width
                 } else {
-                    weight = 10000    # Default value from assignment
+                    weight = 10000    # Predvolená váha zo zadania
                 }
 
                 for (i = 0; i <= arrLength; i++) {
@@ -593,6 +662,8 @@ case "$command" in
                 }
             }
 
+            ## @subsubsection Zobrazenie_štatistík
+            ##
             for (i = 1; i <= arrLength; i++)
                 printf("%s: %s\n", regionKeys[i], regionValues[i])
             if (regionValues[0] > 0)
@@ -601,11 +672,17 @@ case "$command" in
         echo "$out"
         ;;
     ## @subsection Daily
-    ## @brief Shows stats for daily infection cases
+    ## @brief Vypíše štatistiku nakazených pre jednotlivé dni
     ## 
     daily)
         out=$(echo "$log" | cut -f2 -d "," | sort | awk \
         -v width="$histogram_width" -v arrLength=0 '{
+            ## @subsubsection Počet_denných_nákaz
+            ## @description Tvorba poľa pre dennú štatistiku
+            ## @var days Jednotlivé dni so záznamami
+            ## @var daysValues Počet nakazených na deň (korešponduje s days zhodným indexom)
+            ## @var arrLength Dĺžka polí days a daysValues
+            ##
             if (lastLine != $1) {
                 arrLength++
                 days[arrLength] = $1
@@ -614,6 +691,10 @@ case "$command" in
             } else
                 daysValues[arrLength]++
         } END {
+            ## @subsubsection Histogramové_zobrazenie_denných_štatistík
+            ## @var weight Váha jedného dielika
+            ## @var max Maximálna hodnota v poli štatistík
+            ##
             if (width != "") {
                 weight = 0
                 if (width > 0) {
@@ -623,7 +704,7 @@ case "$command" in
                             max = daysValues[i]
                     weight = max/width
                 } else {
-                    weight = 500    # Default value from assignment
+                    weight = 500    # Predvolená váha zo zadania
                 }
 
                 for (i = 0; i <= arrLength; i++) {
@@ -634,6 +715,8 @@ case "$command" in
                 }
             }
 
+            ## @subsubsection Zobrazenie_štatistík
+            ##
             for (i = 1; i <= arrLength; i++)
                 printf("%s: %s\n", days[i], daysValues[i])
             if (daysValues[0] > 0)
@@ -642,11 +725,17 @@ case "$command" in
         echo "$out"
         ;;
     ## @subsection Monthly
-    ## @brief Shows monthly stats of infection cases
+    ## @brief Vypíše štatistiku nakazených pre jednotlivé mesiace
     ## 
     monthly)
         out=$(echo "$log" | cut -f2 -d "," | cut -f1,2 -d "-" | sort | awk \
         -v width="$histogram_width" -v arrLength=0 '{
+            ## @subsubsection Počet_mesačných_nákaz
+            ## @description Tvorba poľa pre mesačnú štatistiku
+            ## @var months Jednotlivé mesiace so záznamami
+            ## @var monthsValues Počet nakazených na mesiac (korešponduje s months zhodným indexom)
+            ## @var arrLength Dĺžka polí months a monthsValues
+            ##
             if (lastLine != $1) {
                 arrLength++
                 months[arrLength] = $1
@@ -655,6 +744,10 @@ case "$command" in
             } else
                 monthsValues[arrLength]++
         } END {
+            ## @subsubsection Histogramové_zobrazenie_mesačných_štatistík
+            ## @var weight Váha jedného dielika
+            ## @var max Maximálna hodnota v poli štatistík
+            ##
             if (width != "") {
                 weight = 0
                 if (width > 0) {
@@ -664,7 +757,7 @@ case "$command" in
                             max = monthsValues[i]
                     weight = max/width
                 } else {
-                    weight = 10000    # Default value from assignment
+                    weight = 10000    # Predvolená váha zo zadania
                 }
 
                 for (i = 0; i <= arrLength; i++) {
@@ -675,6 +768,8 @@ case "$command" in
                 }
             }
 
+            ## @subsubsection Zobrazenie_štatistík
+            ##
             for (i = 1; i <= arrLength; i++)
                 printf("%s: %s\n", months[i], monthsValues[i])
             if (monthsValues[0] > 0)
@@ -683,11 +778,17 @@ case "$command" in
         echo "$out"
         ;;
     ## @subsection Yearly
-    ## @brief Shows yearly stats of infection cases
+    ## @brief Vypíše štatistiku nakazených pre jednotlivé roky
     ## 
     yearly)
         out=$(echo "$log" | cut -f2 -d "," | cut -f1 -d "-" | sort | awk \
         -v width="$histogram_width" -v arrLength=0 '{
+            ## @subsubsection Počet_ročných_nákaz
+            ## @description Tvorba poľa pre ročnú štatistiku
+            ## @var years Jednotlivé roky so záznamami
+            ## @var yearsValues Počet nakazených na rok (korešponduje s years zhodným indexom)
+            ## @var arrLength Dĺžka polí years a yearsValues
+            ##
             if (lastLine != $1) {
                 arrLength++
                 years[arrLength] = $1
@@ -696,6 +797,10 @@ case "$command" in
             } else
                 yearsValues[arrLength]++
         } END {
+            ## @subsubsection Histogramové_zobrazenie_ročných_štatistík
+            ## @var weight Váha jedného dielika
+            ## @var max Maximálna hodnota v poli štatistík
+            ##
             if (width != "") {
                 weight = 0
                 if (width > 0) {
@@ -705,7 +810,7 @@ case "$command" in
                             max = yearsValues[i]
                     weight = max/width
                 } else {
-                    weight = 100000    # Default value from assignment
+                    weight = 100000    # Predvolená váha zo zadania
                 }
 
                 for (i = 0; i <= arrLength; i++) {
@@ -716,6 +821,8 @@ case "$command" in
                 }
             }
 
+            ## @subsubsection Zobrazenie_štatistík
+            ##
             for (i = 1; i <= arrLength; i++)
                 printf("%s: %s\n", years[i], yearsValues[i])
             if (yearsValues[0] > 0)
@@ -724,7 +831,7 @@ case "$command" in
         echo "$out"
         ;;
     ## @subsection Merge/*
-    ## @brief Prints all entries
+    ## @brief Vypíše skombinované súbory na štandardný výstup
     ## 
     merge | *)
         echo "$header"
@@ -734,7 +841,7 @@ case "$command" in
         ;;
 esac
 
-## @section Print_invalid_entries
+## @section Výpis_invalidných_riadkov_a_koniec_skriptu
 ##
 if [ "$error_log" ]; then
     echo "$error_log" >&2
