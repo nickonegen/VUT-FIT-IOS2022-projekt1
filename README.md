@@ -4,7 +4,9 @@
 
 ⚠️ **Zverejnené pre archívne účely — nekopírujte, nula by Vás mrzela. Za nič také nenesiem žiadnu zodpovednosť!** Všetky odovzdané projekty prechádzajú kontrolou plagiátorstva, pri ktorej sa porovnávajú aj s dávnejšie odovzdanými riešeniami.
 
-<br>
+<div align="center">
+    <img alt="demo" src="https://user-images.githubusercontent.com/84882649/236719130-b6c5e4f7-9951-41f7-9260-c91294ec989f.gif" width="50%">
+</div>
 
 Hodnotenie: 15 / 15<br>(bez bonusu)
 
